@@ -3,42 +3,108 @@ import React, { Component } from 'react';
 import './App.css';
 
 class App extends Component {
-  constructor (props) {
-    super(props);
-    this.state = {
-      opacity: 1
-    }
-  }
-  componentDidMount () {
-    var dt = .05;
-    this.timer = setInterval(function () {
-      var op = this.state.opacity;
-      op -= dt;
-      if (op < .1) {
-        dt = -.05;
-      } else if (op > 1) {
-        dt = .05;
-      }
-      this.setState({
-        opacity: op
-      });
-    }.bind(this), 100)
-  }
   render() {
     return (
-      <div style={{opacity: this.state.opacity}}>
-        <Hello name="Noclip"></Hello>
-        <Clock></Clock>
+      <div>
+        <Hello name="Noclip" />
+        <Clock />
+        <Toggle />
+        <ShowOne show={true} />
+        <NumberList list={[1,1,5,6]} />
       </div>
     );
   }
 }
 
+function NumberList (props) {
+  const numbers = props.list;
+  const itemList = numbers.map(
+    (num, index) => <li key={index}>{num}</li>
+  );
+  return (
+    <ul>{itemList}</ul>
+  );
+}
+
+class ShowOne extends Component {
+  constructor(props) {
+    super(props);
+    this.handleShowClick = this.handleShowClick.bind(this);
+    this.handleHideClick = this.handleHideClick.bind(this);
+    this.state = {
+      show: true
+    };
+  }
+  handleShowClick() {
+    this.setState({
+      show: true
+    });
+  }
+  handleHideClick() {
+    this.setState({
+      show: false
+    });
+  }
+  render() {
+    let button = null;
+    if (this.state.show) {
+      button = <button onClick={this.handleHideClick}>Show</button>;
+    } else {
+      button = <button onClick={this.handleShowClick}>Hide</button>;
+    }
+    return (
+      <div>
+        {button}
+      </div>
+    );
+  }
+}
+
+class Toggle extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isToggleOn: false
+    };
+    this.handleClick = this.handleClick.bind(this);
+  }
+  handleClick() {
+    this.setState(prevState => ({
+      isToggleOn: !prevState.isToggleOn
+    }));
+  }
+  render() {
+    return (
+      <button onClick={this.handleClick}>
+        {this.state.isToggleOn ? 'ON' : 'OFF'}
+      </button>
+    );
+  }
+}
+
 class Clock extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {date: new Date()};
+  }
+  componentDidMount() {
+    this.timerID = setInterval(
+      () => this.tick(),
+      1000
+    );
+  }
+  componentWillUnmount() {
+    clearInterval(this.timerID);
+  }
+  tick() {
+    this.setState({
+      date: new Date()
+    });
+  }
   render() {
     return (
       <div>
-        <h1>{new Date().toLocaleTimeString()}</h1>
+        <h1>{this.state.date.toLocaleTimeString()}</h1>
       </div>
     )
   }
