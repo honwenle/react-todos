@@ -11,8 +11,40 @@ class App extends Component {
         <Toggle />
         <ShowOne show={true} />
         <NumberList list={[1,1,5,6]} />
+        <WaterThermometer />
       </div>
     );
+  }
+}
+
+class WaterThermometer extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      temp: ''
+    };
+    this.handleInputTemp = this.handleInputTemp.bind(this);
+  }
+  handleInputTemp(e) {
+    this.setState({
+      temp: e.target.value
+    });
+  }
+  render() {
+    const temp =  this.state.temp;
+    return (
+      <div>
+        <input type="text" value={temp} onChange={this.handleInputTemp} />
+        <BoilingVerdict celsius={temp} />
+      </div>
+    );
+  }
+}
+function BoilingVerdict (props) {
+  if (props.celsius >= 100) {
+    return <p>沸腾了</p>
+  } else {
+    return <p>水还没开</p>
   }
 }
 
