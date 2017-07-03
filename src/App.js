@@ -10,11 +10,14 @@ class App extends Component {
     }
   }
   componentDidMount () {
+    var dt = .05;
     this.timer = setInterval(function () {
       var op = this.state.opacity;
-      op -= .05;
+      op -= dt;
       if (op < .1) {
-        op = 1
+        dt = -.05;
+      } else if (op > 1) {
+        dt = .05;
       }
       this.setState({
         opacity: op
@@ -24,10 +27,25 @@ class App extends Component {
   render() {
     return (
       <div style={{opacity: this.state.opacity}}>
-        Hello {this.props.name}
+        <Hello name="Noclip"></Hello>
+        <Clock></Clock>
       </div>
     );
   }
+}
+
+class Clock extends Component {
+  render() {
+    return (
+      <div>
+        <h1>{new Date().toLocaleTimeString()}</h1>
+      </div>
+    )
+  }
+}
+
+function Hello (props) {
+  return <div>Hello {props.name}</div>;
 }
 
 export default App;
