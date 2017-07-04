@@ -6,9 +6,9 @@ class Todos extends Component {
     this.state = {
       listTodos: []
     };
-    this.onInputChange = this.onInputChange.bind(this);
+    this.addToList = this.addToList.bind(this);
   }
-  onInputChange(value) {
+  addToList(value) {
     this.setState(() => {
       this.state.listTodos.push(value);
     });
@@ -16,7 +16,7 @@ class Todos extends Component {
   render() {
     return (
       <div>
-        <Input inputChange={this.onInputChange} />
+        <Input submitItem={this.addToList} />
         <List list={this.state.listTodos} />
       </div>
     );
@@ -26,23 +26,37 @@ class Todos extends Component {
 class Input extends Component {
   constructor(props) {
     super(props);
+    this.handleKeyUp = this.handleKeyUp.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.state = {
+      strInput: ''
+    };
+  }
+  handleKeyUp(e) {
+    if (e.keyCode === 13) {
+      this.props.submitItem(e.target.value);
+      this.setState({
+        strInput: ''
+      });
+    }
   }
   handleChange(e) {
-    if (e.keyCode === 13) {
-      this.props.inputChange(e.target.value);
-    }
+    console.log(e, e.keyCode)
+    this.setState({
+      strInput: e.target.value
+    });
   }
   render() {
     return (
-      <input onKeyUp={this.handleChange} />
+      <input
+        value={this.state.strInput}
+        onKeyUp={this.handleKeyUp}
+        onInput={this.handleChange}
+        />
     );
   }
 }
 class List extends Component {
-  constructor(props) {
-    super(props);
-  }
   render() {
     const list = this.props.list.map(
       (item, index) => <li key={index}>{item}</li>
