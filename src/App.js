@@ -12,9 +12,24 @@ class App extends Component {
         <ShowOne show={true} />
         <NumberList list={[1,1,5,6]} />
         <WaterThermometer />
+        <WelcomeDialog></WelcomeDialog>
       </div>
     );
   }
+}
+
+function WelcomeDialog() {
+  return (
+    <FancyBorder xxx="123213" children="222" />
+  );
+}
+function FancyBorder(props) {
+  console.log(props)
+  return (
+    <div>
+      {props.children}
+    </div>
+  );
 }
 
 class WaterThermometer extends Component {
@@ -23,28 +38,39 @@ class WaterThermometer extends Component {
     this.state = {
       temp: ''
     };
-    this.handleInputTemp = this.handleInputTemp.bind(this);
+    this.handleTempChange = this.handleTempChange.bind(this);
   }
-  handleInputTemp(e) {
+  handleTempChange(temp) {
     this.setState({
-      temp: e.target.value
+      temp: temp
     });
   }
   render() {
     const temp =  this.state.temp;
     return (
       <div>
-        <input type="text" value={temp} onChange={this.handleInputTemp} />
-        <BoilingVerdict celsius={temp} />
+        <h1>{temp >= 100 ? '沸腾了' : '水还没开'}</h1>
+        <BoilingVerdict temp={temp} onTempChange={this.handleTempChange} />
       </div>
     );
   }
 }
-function BoilingVerdict (props) {
-  if (props.celsius >= 100) {
-    return <p>沸腾了</p>
-  } else {
-    return <p>水还没开</p>
+class BoilingVerdict extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      temp: ''
+    };
+    this.handleInputTemp = this.handleInputTemp.bind(this);
+  }
+  handleInputTemp(e) {
+      this.props.onTempChange(e.target.value);
+  }
+  render() {
+    const temp = this.props.temp
+    return (
+      <input type="text" value={temp} onChange={this.handleInputTemp} />
+    );
   }
 }
 
