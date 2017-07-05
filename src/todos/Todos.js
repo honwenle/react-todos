@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import './todos.css';
 let initList = [
   {
     id: 1,
@@ -14,6 +15,7 @@ class Todos extends Component {
     };
     this.addToList = this.addToList.bind(this);
     this.deleteItem = this.deleteItem.bind(this);
+    this.setFinish = this.setFinish.bind(this);
   }
   addToList(value) {
     let id = Math.random() * 100 + '' + new Date().getTime();
@@ -35,11 +37,20 @@ class Todos extends Component {
       listTodos: newlist
     });
   }
+  setFinish(id, value) {
+    let newlist = this.state.listTodos.map(item => {
+      item.id === id && (item.finish = value)
+      return item;
+    });
+    this.setState({
+      listTodos: newlist
+    });
+  }
   render() {
     return (
       <div>
         <Input submitItem={this.addToList} />
-        <List list={this.state.listTodos} onRemoveItem={this.deleteItem} />
+        <List list={this.state.listTodos} onRemoveItem={this.deleteItem} onSetFinish={this.setFinish} />
       </div>
     );
   }
@@ -82,17 +93,21 @@ class List extends Component {
   constructor(props) {
     super(props);
     this.handleClick = this.handleClick.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
   handleClick(id) {
     this.props.onRemoveItem(id);
+  }
+  handleChange(id, e) {
+    this.props.onSetFinish(id, e.target.checked);
   }
   render() {
     const list = this.props.list.map(
       item =>
         <li key={item.id}>
-          <input type="checkbox"/>
-          <span onClick={this.handleClick.bind(this, item.id)}> [X] </span>
-          {item.value}
+          <input type="checkbox" onChange={this.handleChange.bind(this, item.id)} />
+          <span className='x' onClick={this.handleClick.bind(this, item.id)}> [X] </span>
+          <span className={item.finish && 'del'}>{item.value}</span>
         </li>
     );
     return (
